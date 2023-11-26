@@ -1,7 +1,10 @@
+import 'dotenv/config';
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
+import db from './db.js'
 
 const port = process.env.PORT || 4000;
+const db_host = process.env.DB_HOST;
 
 // TEMPORARY data to test out the API
 let notes = [
@@ -53,6 +56,8 @@ const resolvers = {
 };
 
 const app = express();
+
+db.connect(db_host);
 
 const server = new ApolloServer({ typeDefs, resolvers });
 await server.start();
