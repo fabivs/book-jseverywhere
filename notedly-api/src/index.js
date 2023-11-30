@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
+
 import db from './db.js'
 import models from './models/index.js'
 
@@ -29,8 +30,8 @@ const typeDefs = gql`
 const resolvers = {
     Query: {
         notes: async () => { return await models.Note.find(); },
-        note: (_parent, args) => {
-            return notes.find(note => note.id == args.id)
+        note: async (_parent, args) => {
+            return await models.Note.findById(args.id);
         }
     },
     Mutation: {
@@ -38,7 +39,7 @@ const resolvers = {
             return await models.Note.create({
                 author: 'Adam Scott',
                 content: args.content
-            })
+            });
         }
     }
 };
