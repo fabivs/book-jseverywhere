@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import { ApolloServer, gql } from 'apollo-server-express';
 import db from './db.js'
+import models from './models/index.js'
 
 const port = process.env.PORT || 4000;
 const db_host = process.env.DB_HOST;
