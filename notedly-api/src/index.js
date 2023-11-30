@@ -7,13 +7,6 @@ import models from './models/index.js'
 const port = process.env.PORT || 4000;
 const db_host = process.env.DB_HOST;
 
-// TEMPORARY data to test out the API
-let notes = [
-    { id: '1', content: 'This is a note', author: 'Adam Scott' },
-    { id: '2', content: 'This is another note', author: 'Remo Labarca' },
-    { id: '3', content: 'Yet another note', author: 'Giulio Cesare' }
-];
-
 // GraphQL schema
 const typeDefs = gql`
     type Note {
@@ -23,7 +16,6 @@ const typeDefs = gql`
     }
 
     type Query {
-        hello: String!
         notes: [Note!]!
         note(id: ID!): Note
     }
@@ -36,22 +28,17 @@ const typeDefs = gql`
 // GraphQL resolvers
 const resolvers = {
     Query: {
-        hello: () => 'Hello world!',
-        notes: () => notes,
+        notes: async () => { return await models.Note.find(); },
         note: (_parent, args) => {
             return notes.find(note => note.id == args.id)
         }
     },
     Mutation: {
-        newNote: (_parent, args) => {
-            let noteValue = {
-                id: String(notes.length + 1),
-                content: args.content,
-                author: 'Anonymous',
-            };
-
-            notes.push(noteValue);
-            return noteValue;
+        newNote: async (_parent, args) => {
+            return await models.Note.create({
+                author: 'Adam Scott',
+                content: args.content
+            })
         }
     }
 };
